@@ -17,6 +17,7 @@ Doctor-Appointment-Booking-System     Version - 2.0.0
 │   ├── login.html      # Patient's login Template
 │   ├── register.html   # Patient's register Template
 │   ├── patient.html    # Patient's dashboard Template
+|   ├── booking.html    # Appointment booking Template
 │
 │
 ├── README.md           # Project documentation
