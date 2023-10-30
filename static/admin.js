@@ -19,3 +19,51 @@ toggle.onclick = function () {
   navigation.classList.toggle("active");
   main.classList.toggle("active");
 };
+
+const modal = document.getElementById('modal');
+const openModalBtn = document.getElementById('openModalBtn');
+const closeBtn = document.getElementById('closeBtn');
+const form = document.getElementById('multiStepForm');
+const steps = Array.from(document.getElementsByClassName('step'));
+const prevBtns = Array.from(document.querySelectorAll('button.prev'));
+const nextBtns = Array.from(document.querySelectorAll('button.next'));
+
+let currentStep = 0;
+
+function showStep(stepIndex) {
+    steps[currentStep].classList.remove('active');
+    steps[stepIndex].classList.add('active');
+    prevBtns[currentStep].classList.remove('active');
+    nextBtns[currentStep].classList.remove('active');
+    prevBtns[stepIndex].classList.add('active');
+    nextBtns[stepIndex].classList.add('active');
+    currentStep = stepIndex;
+}
+
+openModalBtn.addEventListener('click', () => {
+    modal.style.display = 'block';
+    showStep(0);
+});
+
+closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+});
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (currentStep === 3) {
+        alert('Form submitted. Check availability here.');
+        modal.style.display = 'none';
+    }
+});
+
+prevBtns.forEach((btn, index) => {
+    btn.addEventListener('click', () => showStep(index - 1));
+});
+
+nextBtns.forEach((btn, index) => {
+    btn.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent form submission
+        showStep(index + 1);
+    });
+});
