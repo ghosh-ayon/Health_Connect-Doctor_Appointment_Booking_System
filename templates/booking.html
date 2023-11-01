@@ -97,108 +97,43 @@
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXEt9of3A59u-gg_hB5GPouBLBah18iNIwbnAtoFbWqcoacF8ZLz0p43JD2Yj0C2l_5kI&usqp=CAU" alt="">
                 </div>
             </div>
+            <br>
+            <br>
+            <p style="text-align: center;font-size: 30px" ><b>Book your Appointment</b></p>
+
+            <br>
+<!-- Add a form inside the container -->
+<form class="content-container" style="overflow: auto; max-height: 500px;" method="POST" action="/book_appointment">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="age">Age:</label>
+    <input type="text" id="age" name="age" required>
+
+    <label for="dob">Date of Birth:</label>
+    <input type="text" id="dob" name="dob" required>
+
+    <label for="phone">Phone:</label>
+    <input type="text" id="phone" name="phone" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="insurance">Insurance Information:</label>
+    <textarea id="insurance" name="insurance" required></textarea>
+
+    <label for="reason">Reason for Visit:</label>
+    <textarea id="reason" name="reason" rows="5" required></textarea>
+
+    <label for="medical-history">Medical history (including any allergies, medications, and chronic conditions):</label>
+    <textarea id="medical-history" name="medical-history" rows="5" required></textarea>
+
+    <input type="submit" value="Submit">
+</form>
 
 
-            <BR><BR><BR><BR><!-- Add a table with two columns and five rows -->
-    <table>
-        <tr>
-        </tr>
-        <tr>
-            <td><b>Want to Book Appointment?</b></td>
-            <td><button id="openModalBtn">Click here.</button></td>
-        </tr>
-        <tr>
-            <td><b>Want to Book Appointment?</b></td>
-            <td>Row 2, Cell 2</td>
-        </tr>
-        <tr>
-            <td><b>Want to Book Appointment?</b></td>
-            <td>Row 3, Cell 2</td>
-        </tr>
-        <tr>
-            <td><b>Want to Book Appointment?</b></td>
-            <td>Row 4, Cell 2</td>
-        </tr>
-        <tr>
-            <td>Row 5, Cell 1</td>
-            <td>Row 5, Cell 2</td>
-        </tr>
-    </table>
-</div>
-</BR></BR></BR></BR>
 
 
-<div class="modal" id="modal">
-    <div class="modal-content">
-        <span class="close" id="closeBtn">&times;</span>
-
-        <form id="multiStepForm">
-            <div class="step" id="step1">
-                <h2>Step 1: Personal Details</h2>
-                <br>
-                <div class="form-field">
-                    <input type="text" placeholder="Name">
-                </div>
-                <div class="form-field">
-                    <input type="text" placeholder="Phone">
-                </div>
-                <div class="form-field">
-                    <input type="text" placeholder="Gender">
-                </div>
-                <div class="form-field">
-                    <input type="text" placeholder="Date of Birth">
-                </div>
-                <div class="form-field">
-                    <input type="email" placeholder="Email">
-                </div>
-                <div class="form-field">
-                    <input type="text" placeholder="Reason for visit">
-                </div>
-                <button class="next" id="next1">Next</button>
-            </div>
-
-            <div class="step" id="step2">
-                <h2>Step 2: Select Service</h2>
-                <div class="form-field">
-                    <select>
-                        <option value="general">General Checkup</option>
-                        <option value="pediatrics">Pediatrics</option>
-                        <option value="cardiology">Cardiology</option>
-                        <option value="dermatology">Dermatology</option>
-                        <option value="gynecology">Gynecology</option>
-                        <option value="ophthalmology">Ophthalmology</option>
-                        <option value="orthopedics">Orthopedics</option>
-                        <option value="psychiatry">Psychiatry</option>
-                        <option value="neurology">Neurology</option>
-                        <option value="dentistry">Dentistry</option>
-                        <option value="optometry">Optometry</option>
-                        
-                    </select>
-                </div>
-                <button class="prev" id="prev2">Previous</button>
-                <button class="next" id="next2">Next</button>
-            </div>
-
-            <div class="step" id="step3">
-                <h2>Step 3: Choose Date and Time</h2>
-                <div class="form-field">
-                    <input type="date">
-                </div>
-                <div class="form-field">
-                    <input type="time">
-                </div>
-                <button class="prev" id="prev3">Previous</button>
-                <button class="next" id="next3">Next</button>
-            </div>
-
-            <div class="step" id="step4">
-                <h2>Step 4: Check Availability</h2>
-                <button class="prev" id="prev4">Previous</button>
-                <button type="submit">Check Availability</button>
-            </div>
-        </form>
-    </div>
-</div>
 
     <script src="{{ url_for('static', filename='admin.js') }}"></script>
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
