@@ -3,7 +3,7 @@ import sys
 # Disable .pyc file generation
 sys.dont_write_bytecode = True
 
-from flask import Flask, render_template, request, redirect, url_for, session, flash, request
+from flask import Flask, render_template, request, redirect, url_for, session, flash, request, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
@@ -12,13 +12,17 @@ from config import DATABASE_CONFIG
 from secret import SECRET_KEY
 import mysql.connector
 import datetime
-
+from recommendation_model import RecommendationModel
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 
 # Use the database configuration from the config file
 db_connection = mysql.connector.connect(**DATABASE_CONFIG)
+
+data_path = "data/input/appointments.csv"  # Replace with the actual path to your dataset
+recommendation_model = RecommendationModel(data_path,)  # You can adjust the number of processes
+
 
 app.config['MYSQL_HOST'] = DATABASE_CONFIG['host']
 app.config['MYSQL_USER'] = DATABASE_CONFIG['user']
@@ -141,11 +145,17 @@ def book_appointment():
         mysql.connection.commit()
         cursor.close()
 
+        # Fetch the details of the newly booked appointment
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM appointments WHERE token = %s', (token,))
+        new_appointment = cursor.fetchone()
+
         flash('success', f'Appointment booked successfully! Your appointment token is: {token}')
-        return redirect(url_for('display_tokens'))
+
+        # Pass the details of the newly booked appointment to the 'recommendations.html' template
+        return render_template('recommend.html', new_appointment=new_appointment)
 
     return render_template('booking.html')
-
 
 @app.route('/display_tokens')
 def display_tokens():
@@ -158,6 +168,44 @@ def display_tokens():
 
     return render_template('token.html', token_list=token_list)
 
+@app.route('/recommend_appointment')
+def recommend_appointment_route():
+    appointment_index = 5  # Replace with the index of the appointment you want recommendations for
+    num_recommendations = 5  # Adjust the number of recommendations as needed
+    recommendations = recommendation_model.get_recommendations(appointment_index, num_recommendations)
+
+    # You can pass the recommendations to a template or return them as JSON
+    return render_template('recommendations.html', recommendations=recommendations)
+
+# Define a function to get appointment details based on the index
+def get_appointment_details(appointment_index):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM appointments WHERE id = %s', (appointment_index,))
+    appointment_details = cursor.fetchone()
+    cursor.close()
+    return appointment_details
+
+# Define a context processor to make get_appointment_details available globally
+@app.context_processor
+def utility_processor():
+    def get_appointment_details_wrapper(appointment_index):
+        return get_appointment_details(appointment_index)
+
+    return dict(get_appointment_details=get_appointment_details_wrapper)
+
+# Modify the 'recommendations.html' route
+@app.route('/recommendations/<int:appointment_index>')
+def show_recommendations(appointment_index):
+    num_recommendations = 5  # You can adjust this to your preferred number of recommendations
+
+    # Call the recommendation model to get appointment recommendations
+    recommendations = recommendation_model.get_recommendations(appointment_index, num_recommendations)
+
+    # Create a list to hold appointment details for the recommendations
+    recommendation_details = [get_appointment_details(index) for index in recommendations]
+
+    # Pass the recommendations and their details to the template for rendering
+    return render_template('recommends.html', recommendations=recommendation_details)
 
 if __name__ == '__main__':
     app.run(debug=True)

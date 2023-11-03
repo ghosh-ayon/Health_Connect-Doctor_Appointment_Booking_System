@@ -538,3 +538,24 @@ tr:nth-child(odd) {
       input[type="submit"]:hover {
           background-color: #0056b3; /* Change background color on hover */
       }
+
+      /* Add this CSS code to your existing CSS file or in a separate CSS file */
+.centered-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.appointment-details-container {
+  background-color: default;
+  border: default;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: -100px;
+}
+
+.appointment-details-container p {
+  margin: 10px 0;
+}
