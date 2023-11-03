@@ -1,4 +1,4 @@
-Doctor-Appointment-Booking-System using AI  Version - 2.2.0  Made by Biswadeb Mukherjee
+Doctor-Appointment-Booking-System using AI _ Version - 2.3.0 (Made by Biswadeb Mukherjee) 
 │
 ├── .git/               # Git repository directory (created when you initialize a repository)
 ├── .gitignore          # Git ignore file to specify which files and directories to exclude from version control
@@ -11,18 +11,19 @@ Doctor-Appointment-Booking-System using AI  Version - 2.2.0  Made by Biswadeb Mu
 ├── static/             # Static files (CSS, JavaScript, images)
 │   ├── admin.css       # CSS styles for the admin dashboard
 │   ├── pictures/       # Images
-│   │   ├── logo.png    # Site logo
-│   │   ├── other.png   # Other images
+│       ├── logo.png    # Site logo
 │
 ├── templates/          # HTML templates
 │   ├── login.html      # Patient's login Template
 │   ├── register.html   # Patient's register Template
 │   ├── patient.html    # Patient's dashboard Template
 │   ├── booking.html    # Appointment booking Template
-│   ├── recommend.html  # Recommendation Template
-│
+│   ├── recommend.html  # Recommendation result Template (if needed)
+|
 ├── recommendation/     # Appointment Recommendation System
 │   ├── data/           # Data for recommendation (real-world or synthetic)
 │   ├── recommendation_model.py  # Model for appointment recommendations
-│
+|
+├── decision_maker.py   # Module for decision-making algorithm
+|
 ├── README.md           # Project documentation
