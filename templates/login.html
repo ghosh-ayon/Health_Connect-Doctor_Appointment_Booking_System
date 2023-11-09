@@ -2,50 +2,65 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <title>HealthConnect - Patient</title>
+    <title>HealthConnect - Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="shortcut icon" href="{{ url_for('static', filename='logo.png') }}" type="image/x-icon">
 </head>
 <body>
-    <header class="bg-primary text-white text-center py-4">
-        <div class="container">
-            <img src="{{ url_for('static', filename='logo.png') }}" alt="HealthConnect Logo" class="img-fluid" style="max-width: 700px;">
-        </div>
-    </header>
-    <div class="container mt-4">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h2 class="card-title text-center">Patient Login</h2>
-                        <form method="post" action="/login">
-                            <div class="form-group">
-                                <label for="username">Username</label>
-                                <input type="text" class="form-control" name="username" id="username" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" class="form-control" name="password" id="password" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Login</button>
-                            <div class="text-center mt-3">
-                                Not a member? <a href="{{ url_for('register') }}">Signup</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for message, category in messages %}
-                            <div class="alert alert-{{ category }}" role="alert">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
+    <section class="vh-100 bg-image"
+    style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
+    <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+      <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+            <div class="card" style="border-radius: 15px;">
+              <div class="card-body p-5">
+                <h2 class="text-uppercase text-center mb-5">Create an account</h2>
+  
+                <form method="post" action="/login">  
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="form3Example4cg">Username</label>
+                    <input type="password" class="form-control form-control-lg" name="username" id="username" required />
+                  </div>
+  
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="form3Example4cdg">Password</label>
+                    <input type="password" class="form-control form-control-lg" name="password" id="password" required />
+                        <button type="button" id="toggle-password" class="btn btn-outline-secondary" onclick="VPassword()">
+                            <i id="visibility-icon" class="fa fa-eye"></i>
+                        </button>
+                      </div>
+                  <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                  </div>
+  
+                  <p class="text-center text-muted mt-5 mb-0">Don't Have Account <a href="{{ url_for('register') }}"
+                      class="fw-bold text-body"><u>Register Now</u></a></p>
+                      <br>
+                      <p class="text-center text-muted mt-5 mb-0">Want to go back? <a href="{{ url_for('home') }}"
+                      class="fw-bold text-body"><u>Go back</u></a></p>
+  
+                </form>
+  
+              </div>
             </div>
+          </div>
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              {% for message, category in messages %}
+                  <div class="alert alert-{{ category }}" role="alert">
+                      {{ message }}
+                  </div>
+              {% endfor %}
+          {% endif %}
+          {% endwith %}
         </div>
+      </div>
     </div>
-    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+  </section>
+               
+
+    <script src="{{ url_for('static', filename='admin.js') }}"></script>
 </body>
 </html>

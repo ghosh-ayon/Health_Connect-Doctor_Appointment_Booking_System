@@ -12,7 +12,7 @@ from config import DATABASE_CONFIG
 from secret import SECRET_KEY
 import mysql.connector
 import datetime
-from recommend.doctor import RecommendationModel
+from recommend.recommend import RecommendationModel
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
@@ -32,6 +32,9 @@ app.config['MYSQL_DB'] = DATABASE_CONFIG['database']
 mysql = MySQL(app)
 
 @app.route('/')
+def home():
+    return render_template('home.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
