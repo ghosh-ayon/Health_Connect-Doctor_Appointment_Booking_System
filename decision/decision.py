@@ -2,11 +2,11 @@ import joblib
 import pandas as pd
 
 # Load the trained model
-model_filename = 'data/output/model.pkl'  # Replace with the actual filename
+model_filename = 'recommend/data/output/model.pkl'  # Replace with the actual filename
 clf = joblib.load(model_filename)
 
 # Load the dataset from a CSV file
-dataset = pd.read_csv('data/input/data.csv')  # Replace with the actual file path
+dataset = pd.read_csv('recommend/data/input/data.csv')  # Replace with the actual file path
 
 # Create the condition-to-index mapping from the dataset
 condition_to_index = {condition: index for index, condition in enumerate(dataset['Condition'])}
