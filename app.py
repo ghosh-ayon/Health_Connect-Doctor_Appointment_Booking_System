@@ -13,6 +13,7 @@ from secret import SECRET_KEY
 import mysql.connector
 import datetime
 from recommendation_model import RecommendationModel
+from decision import Decision  # Add this line to import the Decision class
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
@@ -107,6 +108,7 @@ def book_appointment():
         insurance_info = request.form['insurance']
         reason_for_visit = request.form['reason']
         medical_history = request.form['medical-history']
+        patient_condition = request.form['medical-history']
 
         if not name or not age or not dob_str or not phone or not email:
             flash('danger', 'All fields are required')
@@ -126,6 +128,10 @@ def book_appointment():
         if dob is None:
             flash('danger', 'Invalid date format')
             return redirect(url_for('booking'))
+        
+         # Make a recommendation based on the patient's condition
+        decision_system = Decision('data/output/vectorizer.pkl', 'data/output/tree_model.pkl')  # Specify the correct paths
+        recommended_specialty = decision_system.make_recommendation(patient_condition)
 
         # Generate the token with the format "HC0000"
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -152,8 +158,8 @@ def book_appointment():
 
         flash('success', f'Appointment booked successfully! Your appointment token is: {token}')
 
-        # Pass the details of the newly booked appointment to the 'recommendations.html' template
-        return render_template('recommend.html', new_appointment=new_appointment)
+        # Pass the details of the newly booked appointment to the 'recommend.html' template
+        return render_template('recommend.html', new_appointment=new_appointment, recommended_specialty=recommended_specialty)
 
     return render_template('booking.html')
 
