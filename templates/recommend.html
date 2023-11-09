@@ -117,13 +117,7 @@
                     <p style="text-align: left; font-size: 25px;"><b><strong>Patient's Phone Number: {{ new_appointment.phone }} </strong></p>
                     <p style="text-align: left; font-size: 25px;"><b><strong>Patient's Email-Id: {{ new_appointment.email }} </strong></p>
                     <p style="text-align: left; font-size: 25px;"><b><strong>Reason for Visit: {{ new_appointment.reason_for_visit }} </strong></p>
-
-                        <br>
-
-                        {% if recommended_specialty %}
-                        <h2 style="text-align: center;"><b>Recommended Specialty:</b></h2>
-                        <p style="text-align: center; font-size: 25px;"><b>{{ recommended_specialty }}</b></p>
-                        {% endif %}
+                    <p style="text-align: left; font-size: 25px;"><b><strong>Recommended Specialist: {{ recommended_specialist }}</strong></b></p>
                 </div>
             </div>
 
