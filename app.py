@@ -12,7 +12,7 @@ from config import DATABASE_CONFIG
 from secret import SECRET_KEY
 import mysql.connector
 import datetime
-from recommend.recommend import RecommendationModel
+from recommend.doctor import RecommendationModel
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY

@@ -3,9 +3,10 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 from scipy.sparse import vstack
+import joblib
 
 class RecommendationModel:
-    def __init__(self, data_path):
+    def __init__(self, data_path, model_filename, dataset_filename):
         # Load the appointment data from the CSV file
         self.data = pd.read_csv(data_path)
 
@@ -15,6 +16,18 @@ class RecommendationModel:
 
         # Compute cosine similarity between appointments
         self.cosine_sim = linear_kernel(self.tfidf_matrix, self.tfidf_matrix)
+
+        # Load the trained model
+        self.model = joblib.load(model_filename)
+
+        # Load the dataset from a CSV file
+        self.dataset = pd.read_csv(dataset_filename)
+
+        # Create the condition-to-index mapping from the dataset
+        self.condition_to_index = {condition: index for index, condition in enumerate(self.dataset['Condition'])}
+
+        # Create the list of doctors from the dataset
+        self.doctors = self.dataset['Doctor'].tolist()
 
     def compute_tfidf_matrix(self):
         tfidf_vectorizer = TfidfVectorizer(stop_words='english')
@@ -36,9 +49,24 @@ class RecommendationModel:
         # Return the top-n most similar appointments
         return appointment_indices
 
+    def recommend_doctor(self, patient_condition):
+        # Check if the condition exists in the mapping
+        if patient_condition in self.condition_to_index:
+            condition_index = self.condition_to_index[patient_condition]
+            if 0 <= condition_index < len(self.doctors):
+                recommended_doctor = self.doctors[condition_index]
+                return recommended_doctor
+            else:
+                return "Invalid condition index"
+        else:
+            return "Condition not recognized"
+
 if __name__ == "__main__":
-    data_path = "data/input/appointments.csv"  # Replace with the path to your dataset
-    model = RecommendationModel(data_path)
+    data_path = "recommend/data/input/appointments.csv"  # Replace with the path to your dataset
+    model_filename = 'recommend/data/output/model.pkl'  # Replace with the actual filename
+    dataset_filename = 'recommend/data/input/data.csv'  # Replace with the actual file path
+
+    model = RecommendationModel(data_path, model_filename, dataset_filename)
 
     # Example: Get recommendations for a specific appointment index
     appointment_index = 5  # Replace with the index of the appointment you want recommendations for
@@ -46,3 +74,8 @@ if __name__ == "__main__":
     print(f"Recommendations for appointment at index {appointment_index}:")
     for recommendation_index in recommendations:
         print(f"Recommended appointment at index {recommendation_index}")
+
+    # Example: Get doctor recommendation based on patient's condition
+    patient_condition = " "  # Replace with the patient's condition
+    recommended_doctor = model.recommend_doctor(patient_condition)
+    print(f"Recommended Doctor for '{patient_condition}': {recommended_doctor}")
