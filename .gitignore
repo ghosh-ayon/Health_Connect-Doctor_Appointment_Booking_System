@@ -9,7 +9,7 @@ __pycache__/
 *.pyw
 
 # Distribution / packaging
-/dist/
-/build/
+dist/
+build/
 *.egg-info/
 Health_Connect.egg-info/

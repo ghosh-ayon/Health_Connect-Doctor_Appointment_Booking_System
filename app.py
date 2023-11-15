@@ -22,8 +22,9 @@ db_connection = mysql.connector.connect(**DATABASE_CONFIG)
 # Load the recommendation model
 data_path = "recommend/data/input/appointments.csv"
 model_filename = 'recommend/data/output/model.pkl'
-dataset_filename = 'recommend/data/input/data.csv'
-recommendation_model = RecommendationModel(data_path, model_filename, dataset_filename)
+specialist_dataset_filename = 'recommend/data/input/specialist.csv'
+general_physician_dataset_filename = 'recommend/data/input/general.csv'
+recommendation_model = RecommendationModel(data_path, model_filename, specialist_dataset_filename, general_physician_dataset_filename)
         
 app.config['MYSQL_HOST'] = DATABASE_CONFIG['host']
 app.config['MYSQL_USER'] = DATABASE_CONFIG['user']
@@ -120,7 +121,8 @@ def book_appointment():
             return redirect(url_for('booking'))
         
         # Get the recommended specialist from the AI recommendation model
-        recommended_specialist = recommendation_model.recommend_doctor(patient_condition)
+        recommended_doctor = recommendation_model.recommend_doctor(patient_condition)
+        print(f'Recommended Specialist: {specialist}')
 
         # Parse and convert the date string to the "YYYY-MM-DD" format
         formats = ["%d/%m/%Y", "%d-%m-%Y"]
@@ -155,9 +157,6 @@ def book_appointment():
         mysql.connection.commit()
         cursor.close()
 
-        # Print the generated token for debugging
-        print(f'Generated Token: {token}')
-
         # Fetch the details of the newly booked appointment
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM appointments WHERE token = %s', (token,))
@@ -166,7 +165,7 @@ def book_appointment():
         flash('success', f'Appointment booked successfully! Your appointment token is: {token}')
 
         # Pass the recommended specialist to the booking form
-        return render_template('recommend.html', recommended_specialist=recommended_specialist, form_data=request.form)
+        return render_template('recommend.html', recommended_doctor=recommended_doctor, form_data=request.form, token=token)
         
 
     return render_template('booking.html')
@@ -189,7 +188,7 @@ def recommend_appointment_route():
     recommendations = recommendation_model.get_recommendations(appointment_index, num_recommendations)
 
     # You can pass the recommendations to a template or return them as JSON
-    return render_template('recommendations.html', recommendations=recommendations)
+    return render_template('recommend.html', recommendations=recommendations)
 
 # Define a function to get appointment details based on the index
 def get_appointment_details(appointment_index):

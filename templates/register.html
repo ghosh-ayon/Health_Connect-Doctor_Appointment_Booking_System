@@ -6,10 +6,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="shortcut icon" href="{{ url_for('static', filename='assets/images/photo-1576091160399-112ba8d25d1d.jpeg') }}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
 </head>
 <body>
     <section class="vh-100 bg-image"
-    section class="vh-100 bg-image" style="background-image: url('https://wallpaperaccess.com/full/2134113.jpg'); background-size: cover; width: 100%; height: 100%;">
+    section class="vh-100 bg-image" style="background-image: url('https://wallpaperaccess.com/full/2134113.jpg'); background-size: cover; width: 100%; height: 90%;">
     <div class="mask d-flex align-items-center h-100 gradient-custom-3">
       <div class="container h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
@@ -42,8 +44,13 @@
   
                   <div class="form-outline mb-4">
                     <label class="form-label" for="form3Example4cdg">Password</label>
-                    <input type="password"  class="form-control form-control-lg" name="password" id="password" required />
-                  </div>
+                    <div class="input-group">
+                        <input type="password" class="form-control form-control-lg" name="password" id="password" required />
+                        <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                            <i class="far fa-eye"></i> <!-- Font Awesome eye icon -->
+                        </button>
+                    </div>
+                </div>
                   <div class="d-flex justify-content-center">
                     <button type="submit" class="btn btn-primary btn-block">Register</button>
                   </div>
@@ -72,7 +79,22 @@
       </div>
     </div>
   </section>
-               
+         
+  
+  <script>
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        var passwordInput = document.getElementById('password');
+        var button = document.getElementById('togglePassword');
+  
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            button.innerHTML = '<i class="far fa-eye-slash"></i>'; // Font Awesome eye-slash icon
+        } else {
+            passwordInput.type = 'password';
+            button.innerHTML = '<i class="far fa-eye"></i>'; // Font Awesome eye icon
+        }
+    });
+  </script>
 
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>

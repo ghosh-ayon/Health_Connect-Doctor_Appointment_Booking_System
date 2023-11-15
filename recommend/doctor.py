@@ -1,12 +1,10 @@
 import pandas as pd
-import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
-from scipy.sparse import vstack
 import joblib
 
 class RecommendationModel:
-    def __init__(self, data_path, model_filename, dataset_filename):
+    def __init__(self, data_path, model_filename, specialist_dataset_filename, general_physician_dataset_filename):
         # Load the appointment data from the CSV file
         self.data = pd.read_csv(data_path)
 
@@ -20,14 +18,23 @@ class RecommendationModel:
         # Load the trained model
         self.model = joblib.load(model_filename)
 
-        # Load the dataset from a CSV file
-        self.dataset = pd.read_csv(dataset_filename)
+        # Load the dataset from a CSV file for specialists
+        self.specialist_dataset = pd.read_csv(specialist_dataset_filename)
+        
+        # Create the condition-to-index mapping for specialists
+        self.specialist_condition_to_index = {condition: index for index, condition in enumerate(self.specialist_dataset['Condition'])}
+        
+        # Create the list of specialist doctors
+        self.specialist_doctors = self.specialist_dataset['Doctor'].tolist()
 
-        # Create the condition-to-index mapping from the dataset
-        self.condition_to_index = {condition: index for index, condition in enumerate(self.dataset['Condition'])}
-
-        # Create the list of doctors from the dataset
-        self.doctors = self.dataset['Doctor'].tolist()
+        # Load the dataset from a CSV file for general physicians
+        self.general_physician_dataset = pd.read_csv(general_physician_dataset_filename)
+        
+        # Create the condition-to-index mapping for general physicians
+        self.general_physician_condition_to_index = {condition: index for index, condition in enumerate(self.general_physician_dataset['Condition'])}
+        
+        # Create the list of general physicians
+        self.general_physician_doctors = self.general_physician_dataset['Doctor'].tolist()
 
     def compute_tfidf_matrix(self):
         tfidf_vectorizer = TfidfVectorizer(stop_words='english')
@@ -50,23 +57,35 @@ class RecommendationModel:
         return appointment_indices
 
     def recommend_doctor(self, patient_condition):
-        # Check if the condition exists in the mapping
-        if patient_condition in self.condition_to_index:
-            condition_index = self.condition_to_index[patient_condition]
-            if 0 <= condition_index < len(self.doctors):
-                recommended_doctor = self.doctors[condition_index]
+        # Check if the condition exists in the mapping for specialists
+        if patient_condition in self.specialist_condition_to_index:
+            condition_index = self.specialist_condition_to_index[patient_condition]
+            if 0 <= condition_index < len(self.specialist_doctors):
+                recommended_doctor = self.specialist_doctors[condition_index]
                 return recommended_doctor
             else:
                 return "Invalid condition index"
         else:
-            return "Condition not recognized"
+            # Check if the condition exists in the mapping for general physicians
+            if patient_condition in self.general_physician_condition_to_index:
+                condition_index = self.general_physician_condition_to_index[patient_condition]
+                if 0 <= condition_index < len(self.general_physician_doctors):
+                    recommended_doctor = self.general_physician_doctors[condition_index]
+                    return recommended_doctor
+                else:
+                    return "Invalid condition index for general physicians"
+            else:
+                # If condition is not recognized for both specialists and general physicians, recommend a default general physician
+                default_general_physician = self.general_physician_doctors[0]  # Assuming the first entry is the default general physician
+                return default_general_physician
 
 if __name__ == "__main__":
     data_path = "recommend/data/input/appointments.csv"  # Replace with the path to your dataset
     model_filename = 'recommend/data/output/model.pkl'  # Replace with the actual filename
-    dataset_filename = 'recommend/data/input/data.csv'  # Replace with the actual file path
+    specialist_dataset_filename = 'recommend/data/input/specialist.csv'  # Replace with the actual file path
+    general_physician_dataset_filename = 'recommend/data/input/general.csv'  # Replace with the actual file path
 
-    model = RecommendationModel(data_path, model_filename, dataset_filename)
+    model = RecommendationModel(data_path, model_filename, specialist_dataset_filename, general_physician_dataset_filename)
 
     # Example: Get recommendations for a specific appointment index
     appointment_index = 5  # Replace with the index of the appointment you want recommendations for
