@@ -1,7 +1,16 @@
-# Disable .pyc file generation
-sys.dont_write_bytecode = True
-
-from all import *
+from flask import Flask, render_template, request, redirect, url_for, session, flash, request, jsonify
+from flask_mysqldb import MySQL
+import MySQLdb.cursors
+import re
+import secrets
+from config import DATABASE_CONFIG
+from secret import SECRET_KEY
+import mysql.connector
+import datetime
+import pandas as pd
+import csv
+from werkzeug.datastructures import ImmutableMultiDict
+from recommend.doctor import RecommendationModel
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
@@ -10,17 +19,12 @@ app.secret_key = SECRET_KEY
 db_connection = mysql.connector.connect(**DATABASE_CONFIG)
 
 
-model_filename = "recommend/data/output/model.pkl"  # Replace with the actual path to your model file
-
-with open("recommend/data/input/data.csv", 'r', encoding='mac_roman', errors='replace') as file:
-    dataset_filename = pd.read_csv(file)
-
-with open("recommend/data/input/appointments.csv", 'r', encoding='ascii', errors='replace') as file:
-    data_path = pd.read_csv(file)
-
-
-recommendation_model = RecommendationModel(model_filename, dataset_filename, data_path)
-
+# Load the recommendation model
+data_path = "recommend/data/input/appointments.csv"
+model_filename = 'recommend/data/output/model.pkl'
+dataset_filename = 'recommend/data/input/data.csv'
+recommendation_model = RecommendationModel(data_path, model_filename, dataset_filename)
+        
 app.config['MYSQL_HOST'] = DATABASE_CONFIG['host']
 app.config['MYSQL_USER'] = DATABASE_CONFIG['user']
 app.config['MYSQL_PASSWORD'] = DATABASE_CONFIG['password']
@@ -99,18 +103,24 @@ def generate_token():
 @app.route('/book_appointment', methods=['POST'])
 def book_appointment():
     if request.method == 'POST':
+        # Get form data
+        form_data = request.form.to_dict(flat=False)
+
         name = request.form['name']
         age = request.form['age']
         dob_str = request.form['dob']  # Get the date of birth as a string
         phone = request.form['phone']
         email = request.form['email']
-        insurance_info = request.form['insurance']
-        reason_for_visit = request.form['reason']
+        specialist = request.form['specialist']
+        patient_condition = request.form['patient_condition']
         medical_history = request.form['medical-history']
 
         if not name or not age or not dob_str or not phone or not email:
             flash('danger', 'All fields are required')
             return redirect(url_for('booking'))
+        
+        # Get the recommended specialist from the AI recommendation model
+        recommended_specialist = recommendation_model.recommend_doctor(patient_condition)
 
         # Parse and convert the date string to the "YYYY-MM-DD" format
         formats = ["%d/%m/%Y", "%d-%m-%Y"]
@@ -139,11 +149,14 @@ def book_appointment():
             # If there are no existing tokens, start from "HC0001"
             token = 'HC0001'
 
-        # Insert data into the database, including the generated token
-        cursor.execute('INSERT INTO appointments (token, name, age, dob, phone, email, insurance_info, reason_for_visit, medical_history) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)',
-                       (token, name, age, dob, phone, email, insurance_info, reason_for_visit, medical_history))
+        # Insert data into the database, including the generated token and specialist information
+        cursor.execute('INSERT INTO appointments (token, name, age, dob, phone, email, specialist, patient_condition, medical_history) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)',
+                       (token, name, age, dob, phone, email, specialist, patient_condition, medical_history))
         mysql.connection.commit()
         cursor.close()
+
+        # Print the generated token for debugging
+        print(f'Generated Token: {token}')
 
         # Fetch the details of the newly booked appointment
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -152,8 +165,9 @@ def book_appointment():
 
         flash('success', f'Appointment booked successfully! Your appointment token is: {token}')
 
-        # Pass the details of the newly booked appointment to the 'recommendations.html' template
-        return render_template('recommend.html', new_appointment=new_appointment)
+        # Pass the recommended specialist to the booking form
+        return render_template('recommend.html', recommended_specialist=recommended_specialist, form_data=request.form)
+        
 
     return render_template('booking.html')
 

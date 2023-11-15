@@ -111,14 +111,16 @@
                 <div class="appointment-details-container">
                     <h1 style="text-align: center;"><b>Your Appointment Details:</b></h2>
                     <br>
-                    <p style="text-align: left; font-size: 25px;"><b><strong>Appointment Token: {{ new_appointment.token }} </strong></b></p>
-                    <p style="text-align: left; font-size: 25px;"><b><strong>Patient's Name: {{ new_appointment.name }}</strong></b></p>
-                    <p style="text-align: left; font-size: 25px;"><b><strong>Patient's Date of Birth: {{ new_appointment.dob }} </strong></p>
-                    <p style="text-align: left; font-size: 25px;"><b><strong>Patient's Phone Number: {{ new_appointment.phone }} </strong></p>
-                    <p style="text-align: left; font-size: 25px;"><b><strong>Patient's Email-Id: {{ new_appointment.email }} </strong></p>
-                    <p style="text-align: left; font-size: 25px;"><b><strong>Reason for booking this appointment: {{ new_appointment.patient_condition }} </strong></p>
-                    <p style="text-align: left; font-size: 25px;"><b><strong>Specialist: {{new_appointment.specialist }}</strong></b></p>
+                    <p style="text-align: left; font-size: 25px;"><b><strong>Appointment Token: {{ form_data.token }}</strong></b></p>
+                    <p style="text-align: left; font-size: 25px;"><b><strong>Patient's Name: {{ form_data['name'] }}</strong></b></p>
+                    <p style="text-align: left; font-size: 25px;"><b><strong>Patient's Date of Birth: {{ form_data['dob'] }} </strong></p>
+                    <p style="text-align: left; font-size: 25px;"><b><strong>Patient's Phone Number: {{ form_data['phone'] }} </strong></p>
+                    <p style="text-align: left; font-size: 25px;"><b><strong>Patient's Email-Id: {{ form_data['email'] }} </strong></p>
+                    <p style="text-align: left; font-size: 25px;"><b><strong>Specialist: {{ recommended_specialist }}</strong></b></p>
+                    <p style="text-align: left; font-size: 25px;"><b><strong>Reason for booking this appointment: {{ form_data['patient_condition'] }} </strong></p>
+                    <p style="text-align: left; font-size: 25px;"><b><strong>Reason for booking this appointment: {{ form_data['medical-history'] }} </strong></p>    
                 </div>
+                <p style="text-align: left; font-size: 25px;"><b><strong> </strong></p>
             </div>
 
 
