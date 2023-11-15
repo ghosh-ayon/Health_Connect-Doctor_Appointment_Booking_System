@@ -67,3 +67,37 @@ nextBtns.forEach((btn, index) => {
         showStep(index + 1);
     });
 });
+
+
+    // Function to update specialist field based on user input
+    function updateSpecialistField() {
+        // Get the user input from the patient_condition field
+        var patientCondition = document.getElementById('patient_condition').value;
+
+        // Make an AJAX request to the server to get the suggested specialist
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/get_suggested_specialist', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        // Define the data to be sent to the server (in this case, the patient condition)
+        var data = JSON.stringify({ 'patient_condition': patientCondition });
+
+        // Set up the callback function to handle the server's response
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Update the specialist field with the suggested specialist
+                document.getElementById('specialist').value = xhr.responseText;
+            }
+        };
+
+        // Send the AJAX request with the data
+        xhr.send(data);
+    }
+
+    // Attach the updateSpecialistField function to the input event of the patient_condition field
+    document.getElementById('patient_condition').addEventListener('input', updateSpecialistField);
+
+  document.getElementById('patient_condition').addEventListener('input', function() {
+        // Call a function to update the specialist suggestion
+        updateSpecialistSuggestion();
+    });

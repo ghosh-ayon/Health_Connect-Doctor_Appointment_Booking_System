@@ -1,18 +1,7 @@
-import sys
-
 # Disable .pyc file generation
 sys.dont_write_bytecode = True
 
-from flask import Flask, render_template, request, redirect, url_for, session, flash, request, jsonify
-from flask_mysqldb import MySQL
-import MySQLdb.cursors
-import re
-import secrets
-from config import DATABASE_CONFIG
-from secret import SECRET_KEY
-import mysql.connector
-import datetime
-from recommend.doctor import RecommendationModel
+from all import *
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
@@ -20,9 +9,17 @@ app.secret_key = SECRET_KEY
 # Use the database configuration from the config file
 db_connection = mysql.connector.connect(**DATABASE_CONFIG)
 
-data_path = "recommend/data/input/appointments.csv"  # Replace with the actual path to your dataset
-recommendation_model = RecommendationModel(data_path,)  # You can adjust the number of processes
 
+model_filename = "recommend/data/output/model.pkl"  # Replace with the actual path to your model file
+
+with open("recommend/data/input/data.csv", 'r', encoding='mac_roman', errors='replace') as file:
+    dataset_filename = pd.read_csv(file)
+
+with open("recommend/data/input/appointments.csv", 'r', encoding='ascii', errors='replace') as file:
+    data_path = pd.read_csv(file)
+
+
+recommendation_model = RecommendationModel(model_filename, dataset_filename, data_path)
 
 app.config['MYSQL_HOST'] = DATABASE_CONFIG['host']
 app.config['MYSQL_USER'] = DATABASE_CONFIG['user']
@@ -209,6 +206,17 @@ def show_recommendations(appointment_index):
 
     # Pass the recommendations and their details to the template for rendering
     return render_template('recommends.html', recommendations=recommendation_details)
+
+@app.route('/suggest_specialist', methods=['POST'])
+def suggest_specialist():
+    # Get the patient condition from the AJAX request
+    patient_condition = request.json['patient_condition']
+
+    # Use your AI algorithm to determine the suitable specialist
+    suggested_specialist = RecommendationModel(patient_condition)
+
+    # Return the suggested specialist
+    return jsonify(suggested_specialist)
 
 if __name__ == '__main__':
     app.run(debug=True)

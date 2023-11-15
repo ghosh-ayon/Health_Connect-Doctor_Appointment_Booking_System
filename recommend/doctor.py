@@ -75,7 +75,7 @@ if __name__ == "__main__":
     for recommendation_index in recommendations:
         print(f"Recommended appointment at index {recommendation_index}")
 
-    # Example: Get doctor recommendation based on patient's condition
-    patient_condition = " "  # Replace with the patient's condition
+    # Example: Get doctor recommendation based on user input for patient's condition
+    patient_condition = input("Enter patient's condition: ")
     recommended_doctor = model.recommend_doctor(patient_condition)
     print(f"Recommended Doctor for '{patient_condition}': {recommended_doctor}")

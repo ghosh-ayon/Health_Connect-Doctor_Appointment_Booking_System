@@ -116,8 +116,8 @@
                     <p style="text-align: left; font-size: 25px;"><b><strong>Patient's Date of Birth: {{ new_appointment.dob }} </strong></p>
                     <p style="text-align: left; font-size: 25px;"><b><strong>Patient's Phone Number: {{ new_appointment.phone }} </strong></p>
                     <p style="text-align: left; font-size: 25px;"><b><strong>Patient's Email-Id: {{ new_appointment.email }} </strong></p>
-                    <p style="text-align: left; font-size: 25px;"><b><strong>Reason for Visit: {{ new_appointment.reason_for_visit }} </strong></p>
-                    <p style="text-align: left; font-size: 25px;"><b><strong>Recommended Specialist: {{ recommended_specialist }}</strong></b></p>
+                    <p style="text-align: left; font-size: 25px;"><b><strong>Reason for booking this appointment: {{ new_appointment.patient_condition }} </strong></p>
+                    <p style="text-align: left; font-size: 25px;"><b><strong>Specialist: {{new_appointment.specialist }}</strong></b></p>
                 </div>
             </div>
 
