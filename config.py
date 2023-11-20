@@ -1,6 +1,6 @@
 DATABASE_CONFIG = {
     'host': 'localhost',
-    'user': 'Biswadeb',
-    'password': '#Biswadeb-941',
+    'user': 'root',
+    'password': '',
     'database': 'registration',
 }

@@ -18,6 +18,45 @@ app.secret_key = SECRET_KEY
 # Use the database configuration from the config file
 db_connection = mysql.connector.connect(**DATABASE_CONFIG)
 
+# Check and create the required database and tables if they don't exist
+with db_connection.cursor() as cursor:
+    # Create the database
+    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DATABASE_CONFIG['database']}")
+    cursor.execute(f"USE {DATABASE_CONFIG['database']}")
+    
+
+    # Create the users table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(255) NOT NULL,
+            password VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            name VARCHAR(255) NOT NULL,
+            phone VARCHAR(15) NOT NULL
+        )
+    """)
+
+    # Create the appointments table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS appointments (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            token VARCHAR(10) NOT NULL,
+            name VARCHAR(255) NOT NULL,
+            age INT NOT NULL,
+            dob DATE NOT NULL,
+            phone VARCHAR(15) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            specialist VARCHAR(255) NOT NULL,
+            patient_condition VARCHAR(255) NOT NULL,
+            medical_history TEXT,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+# Commit the changes
+db_connection.commit()
+
 
 # Load the recommendation model
 data_path = "recommend/data/input/appointments.csv"
