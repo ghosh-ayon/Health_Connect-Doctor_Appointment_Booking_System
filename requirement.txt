@@ -10,7 +10,7 @@ Flask-MySQLdb
 Flask-SQLAlchemy
 keras
 mysql-connector-python
-mysqlclient
+mysqlclient==2.0.0
 nltk
 numpy
 pandas
@@ -33,7 +33,6 @@ tensorflow-intel
 tensorflow-io-gcs-filesystem
 torch
 torchdata
-urllib
 virtualenv
 wcwidth
 Werkzeug
